@@ -1,0 +1,83 @@
+import { SectionWrapper } from "@/components/section-wrapper";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import articles from "@/articles/articles.json";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Blog — Yordan Yordanov",
+  description: "Writing about AI, Security, and Full-Stack Development.",
+  alternates: {
+    canonical: "/blog",
+  },
+  openGraph: {
+    title: "Blog — Yordan Yordanov",
+    description: "Writing about AI, Security, and Full-Stack Development.",
+    url: "/blog",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog — Yordan Yordanov",
+    description: "Writing about AI, Security, and Full-Stack Development.",
+    images: ["/og.jpg"],
+  },
+};
+
+function getExcerpt(body: string) {
+  const normalized = body.replace(/\s+/g, " ").trim();
+  return normalized.length > 220
+    ? `${normalized.slice(0, 217).trimEnd()}…`
+    : normalized;
+}
+
+export default function BlogPage() {
+  const posts = [...articles]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .map((article) => ({
+    title: article.title,
+    date: new Date(article.date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }),
+    excerpt: getExcerpt(article.content[0].body),
+    slug: `/blog/${article.id}`,
+  }));
+
+  return (
+    <main className="flex flex-col items-center justify-center pb-16 px-6 sm:px-12 max-w-5xl mx-auto w-full">
+      <SectionWrapper className="w-full">
+        <div className="flex flex-col gap-4 mb-12">
+          <Link href="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-4 w-fit transition-colors">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Home
+          </Link>
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
+            Blog
+          </h1>
+          <p className="max-w-xl text-lg text-muted-foreground leading-relaxed">
+            Thoughts, technical deep dives, and ongoing research into modern software and security.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-8">
+          {posts.map((post) => (
+            <Link key={post.slug} href={post.slug} className="group flex flex-col gap-2 rounded-2xl p-6 md:p-8 border border-border bg-card/50 hover:bg-card hover:border-primary/40 transition-[background-color,border-color,transform] duration-200">
+              <span className="text-sm font-medium text-muted-foreground">{post.date}</span>
+              <h2 className="text-2xl font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">
+                {post.title}
+              </h2>
+              <p className="text-muted-foreground mt-2 leading-relaxed line-clamp-4">
+                {post.excerpt}
+              </p>
+              <div className="mt-4 text-sm font-semibold text-primary inline-flex items-center">
+                Read article <span className="ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-[opacity,transform] duration-200">→</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </SectionWrapper>
+    </main>
+  );
+}
