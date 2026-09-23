@@ -60,3 +60,13 @@ This project allows Next Image qualities `75` and `85` in `next.config.ts` to ma
 ## Deployment
 
 Deploy to Vercel (recommended for Next.js) or any platform that supports Node.js.
+
+## Docker
+
+Build and run the production image with Docker Compose:
+
+```sh
+docker compose up --build
+```
+
+Open `http://localhost:3000`. To provide the optional contact-form key, create a `.env` file from `.env.example` before starting Compose.
